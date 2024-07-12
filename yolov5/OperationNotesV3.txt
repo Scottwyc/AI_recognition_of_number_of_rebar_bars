@@ -1,0 +1,83 @@
+# 1. conda build env
+move the file cpu_torch_yolov5_environment.yaml  under  C:\Users\username(your username)
+
+and use conda to create the env (named "torch")
+
+```shell
+conda env create -f cpu_torch_yolov5_environment.yaml
+```
+
+# 2. unzip dataWithLabel.zip
+
+dataWithLabel contains folders: train640, test640, Label_normalized.
+
+train640 and test640 are respectively train data and  test data. They contain images in shape 640*640(resized).
+
+Label_normalized contains all labels for train data, in the form of text files(each file matches one image in train data).
+
+# 3. unzip yolov5，set dataset, and set comet-ml api(if you need)
+
+## set data set
+
+in the folder yolov5, should substitute the content in "own_data":
+
+in own_data\images\train should put train640 data
+
+in own_data\images\test can use test640 data(or just no change)
+
+in own_data\labels\train should use Label_normalized data
+
+## set comet-ml api
+
+in yolov5\.comet.config   
+
+```txt
+[comet]
+api_key = FXnUmSnYWoWxiCqeVukAHbofg   #it is wyc's key, can use your own comet-ml api 
+project_name= yolov5 # This will default to 'yolov5'
+```
+you can set the api_key for your own.
+
+If not, you can share the online link of comet in the wechat group, wyc can open the link.
+
+# 4. train and detect in yolov5
+
+## train
+
+in yolov5\train.py , some settings can be modified:
+
+``` python
+def parse_opt(known=False):
+	...
+	parser.add_argument()
+```
+
+you can change those settings like:
+ "--batch-size" 
+ "--epochs" can be like 300
+"--workers": the number of cores of cpu  to be used
+
+then run train.py
+
+## detect in yolov5
+
+after running  yolov5\train.py 
+
+get the trained model in 'runs/train/exp/weights/best.pt', but actually, "exp" may be like "exp2" and so on, should check the path to find the location of newest output.
+
+then set in detect.py:
+
+```python
+parser.add_argument('--weights', nargs='+', type=str, default='runs/train/exp/weights/best.pt', help='model path(s)') # change "exp"
+```
+
+then run detect.py
+
+
+
+
+
+
+
+
+
